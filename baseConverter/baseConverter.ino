@@ -22,9 +22,10 @@
   * THE SOFTWARE.
   *
  */
+
 #include<Keyboard.h>
-#define ZERO 3
-#define ONE 4
+#define ONE 3
+#define ZERO 4
 #define ENTER 5
 
 typedef struct binary {
@@ -42,16 +43,18 @@ void Push(binary ** headRef, int d) {
 	newBinary->next = *headRef;
 	*headRef = newBinary;
 }
+
 void biToDec(binary * head) {
-	int sum = 0;
+	unsigned int sum = 0;
 	if (!head)
 		return;
 	for (int i = 0; head; i++, head = head->next)
 		sum += head->data * (int)(pow(2, i) + 0.5);
-	keyboard.print("Base 10: ");
-	keyboard.write(sum);
+	Keyboard.print("\nBase 10: ");
+	Keyboard.print(sum);
 	return;
 }
+
 void biToOct(binary * head) {
 	int sum = 0;
 	if (!head)
@@ -61,6 +64,7 @@ void biToOct(binary * head) {
 	Push(&oct, sum);
 	biToOct(head);
 }
+
 void biToHex(binary * head) {
 	int sum = 0;
 	if (!head)
@@ -70,47 +74,41 @@ void biToHex(binary * head) {
 	Push(&hex, sum);
 	biToHex(head);
 }
+
 void printList(binary * head) {
 	if (!head)
-		keyboard.print("null");
+		Keyboard.print("null");
 	for (; head; head = head->next) {
 		switch (head->data)
 		{
-		case 10: keyboard.write('A'); break;
-		case 11: keyboard.write('B'); break;
-		case 12: keyboard.write('C'); break;
-		case 13: keyboard.write('D'); break;
-		case 14: keyboard.write('E'); break;
-		case 15: keyboard.write('F'); break;
-		default: keyboard.write(head->data); break;
+		case 10: Keyboard.print("A"); break;
+		case 11: Keyboard.print("B"); break;
+		case 12: Keyboard.print("C"); break;
+		case 13: Keyboard.print("D"); break;
+		case 14: Keyboard.print("E"); break;
+		case 15: Keyboard.print("F"); break;
+		default: Keyboard.print(head->data); break;
 		}
 	}
 }
+
+void calculateAll(){
+  biToDec(head);
+  biToOct(head);
+  biToHex(head);
+}
+
+void printAll(){
+  Keyboard.print("\nBase 8: ");
+  printList(oct);
+  Keyboard.print("\nBase 16: ");
+  printList(hex);
+  Keyboard.print("\n\nEnter a base 2 number: ");
+}
+
 void erase(binary ** headRef) {
 	free(*headRef);
 	*headRef = NULL;
-}
-void driver(){
-  Keyboard.begin();
- if (digitalRead(3) == 0)
-  {
-    Keyboard.write('1');
-    Push(&head,1);
-    delay(700);
-  }
-  else if (digitalRead(4) == 0){
-    Keyboard.write('0');
-    Push(&head,0);
-    delay(700);
-}
-  else if (digitalRead(5) == 0){
-    Keyboard.write('\n');
-    calculateAll();
-    printAll();
-    eraseAll();
-    delay(700);
-  }
-  Keyboard.end();
 }
 
 void eraseAll(){
@@ -119,17 +117,26 @@ void eraseAll(){
   erase(&hex);
 }
 
-void printAll(){
-  Keyboard.print("\nBase 8: ");
-  printList(oct);
-  Keyboard.print("\nBase 16: ");
-  printList(hex);
+void driver(){
+  Keyboard.begin();
+  if (!digitalRead(ONE))
+  {
+    Keyboard.write('1');
+    Push(&head,1);
+    delay(700);
+  }
+  else if (!digitalRead(ZERO)){
+    Keyboard.write('0');
+    Push(&head,0);
+    delay(700);
 }
-
-void calculateAll(){
-  biToDec(head);
-  biToOct(head);
-  biToHex(head);
+  else if (!digitalRead(ENTER)){
+    calculateAll();
+    printAll();
+    eraseAll();
+    delay(700);
+  }
+  Keyboard.end();
 }
 
 void setup() {
