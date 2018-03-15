@@ -1,2 +1,3 @@
 # baseConvertArduino
-A simple converter from base 2 to base 8,10 and 16 using arduino micro and 3 buttons.
+A small school project that converts from binary to decimal, octal and hexa-decimal.
+You need an arduino micro/leonardo and 3 buttons and a text editor on your computer to run the project.
